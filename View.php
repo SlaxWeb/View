@@ -9,10 +9,10 @@ class View
     protected $_twig = null;
     protected $_rendered = false;
 
-    public function __construct(array $data = [])
+    public function __construct(array $data = [], array $options = ["cache" => TWIGCACHE])
     {
         $this->_loader = new \Twig_Loader_Filesystem(TEMPLATEPATH);
-        $this->_twig = new \Twig_Environment($this->_loader, ["cache" => TWIGCACHE]);
+        $this->_twig = new \Twig_Environment($this->_loader, $options);
 
         $this->view = $this->_getViewClass($this) . ".html";
         $this->viewData = $data;
