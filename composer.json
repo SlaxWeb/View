@@ -18,5 +18,10 @@
 			"SlaxWeb\\View": ""
 		}
 	},
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.2.x-dev"
+        }
+    },
     "target-dir": "SlaxWeb/View"
 }
