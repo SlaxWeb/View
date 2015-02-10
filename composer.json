@@ -2,7 +2,7 @@
     "name": "slaxweb/view",
     "description": "View library for SlaxWeb Framework",
     "license": "MIT",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "authors": [
         {
             "name": "Tomaz Lovrec",

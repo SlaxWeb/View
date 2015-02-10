@@ -35,7 +35,7 @@ class View
     {
         $classname = get_class($obj);
 
-        if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
+        if (preg_match('~^View\\\\(.*)$~', $classname, $matches)) {
             $classname = $matches[1];
         }
 
