@@ -2,7 +2,7 @@
     "name": "slaxweb/view",
     "description": "View library for SlaxWeb Framework",
     "license": "MIT",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "authors": [
         {
             "name": "Tomaz Lovrec",
@@ -11,7 +11,7 @@
     ],
     "require": {
 		"php":	">=5.5.0",
-        "twig/twig": "1.17.0"
+        "twig/twig": "~1.23"
     },
 	"autoload":	{
 		"psr-0": {
@@ -20,7 +20,7 @@
 	},
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.2.x-dev"
+            "dev-develop": "0.3.x-dev"
         }
     },
     "target-dir": "SlaxWeb/View"
