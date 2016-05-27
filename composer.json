@@ -2,7 +2,6 @@
     "name": "slaxweb/view",
     "description": "View library for SlaxWeb Framework",
     "license": "MIT",
-    "version": "0.2.0",
     "authors": [
         {
             "name": "Tomaz Lovrec",
@@ -10,18 +9,23 @@
         }
     ],
     "require": {
-		"php":	">=5.5.0",
-        "twig/twig": "~1.23"
+        "php":  ">=7.0.0"
     },
-	"autoload":	{
-		"psr-0": {
-			"SlaxWeb\\View": ""
-		}
-	},
-    "extra": {
-        "branch-alias": {
-            "dev-develop": "0.3.x-dev"
+    "require-dev": {
+        "codeception/codeception": "dev-master",
+        "codeception/specify": "*",
+        "behat/gherkin": "~4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "SlaxWeb\\View\\": "src/",
+            "SlaxWeb\\View\\Test\\Unit\\": "tests/unit/"
         }
     },
-    "target-dir": "SlaxWeb/View"
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.4.x-dev"
+        }
+    },
+    "minimum-stability": "dev"
 }
