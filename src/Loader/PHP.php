@@ -14,8 +14,29 @@
  */
 namespace SlaxWeb\View\Loader;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class PHP
 {
+    /**
+     * Template variables caching
+     */
+    const TPL_CACHE_VARS = 100;
+    const TPL_NO_CACHE_VARS = 101;
+
+    /**
+     * Template render output control
+     */
+    const TPL_RETURN = 200;
+    const TPL_OUTPUT = 201;
+
+    /**
+     * Response
+     *
+     * @var \Symfony\Component\HttpFoundation\Response
+     */
+    protected $_response = null;
+
     /**
      * Template file
      *
@@ -52,6 +73,20 @@ class PHP
     }
 
     /**
+     * Class constructor
+     *
+     * Assigns the dependant Response object to the class property. The View loader
+     * will automatically add template contents to as response body.
+     *
+     * @param \Symfony\Component\HttpFoundation\Response $response Response object
+     * @return void
+     */
+    public function __construct(Response $response)
+    {
+        $this->_response = $response;
+    }
+
+    /**
      * Set the template directory
      *
      * Sets the template directory name.
@@ -71,18 +106,23 @@ class PHP
      * Loads the template file with the retrieved data array, and returns the rendered
      * template. By default the template data is cached in the internal property
      * for all future renders of that same requests. To disable the cached vars
-     * and load the template only with the currently passed in data, bool(false)
-     * has to be sent as the second parameter.
+     * and load the template only with the currently passed in data, constant TPL_NO_CACHE_VARS
+     * has to be sent as the third parameter.
+     *
+     * The Render method will automatically add contents of the rendered template
+     * file to the Response object as response body. If you wish to retrieve the
+     * contents back, pass in constant TPL_RETURN as the second parameter.
      *
      * @param array $data Template data to be passed to the template. Default []
-     * @param bool $cacheData Cache template data. Default bool(true)
+     * @param int $return Output or return rendered template. Default self::TPL_OUTPUT
+     * @param int $cacheData Cache template data. Default self::TPL_CACHE_VARS
      * @return string
      *
      * @exceptions SlaxWeb\View\Exception\TemplateNotFoundException
      */
-    public function render(array $data = [], bool $cacheData = true)
+    public function render(array $data = [], int $return = self::TPL_OUTPUT, int $cacheData = self::TPL_CACHE_VARS)
     {
-        if ($cacheData) {
+        if ($cacheData === self::TPL_CACHE_VARS) {
             $this->_cachedData = array_merge($this->_cachedData, $data);
             $data = $this->_cachedData;
         }
@@ -101,6 +141,10 @@ class PHP
         $buffer = ob_get_contents();
         ob_end_clean();
 
-        return $buffer;
+        if ($return === self::TPL_RETURN) {
+            return $buffer;
+        }
+
+        $this->_response->setContent($this->_response->getContent . $buffer);
     }
 }

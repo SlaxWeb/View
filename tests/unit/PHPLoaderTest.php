@@ -13,6 +13,8 @@
  */
 namespace SlaxWeb\View\Tests\Unit;
 
+use SlaxWeb\View\Loader\PHP as Loader;
+
 class PHPLoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -74,14 +76,15 @@ EOD;
      */
     public function testRender()
     {
-        $loader = $this->getMockBuilder(\SlaxWeb\View\Loader\PHP::class)
+        $loader = $this->getMockBuilder(Loader::class)
+            ->disableOriginalConstructor()
             ->setMethods(null)
             ->getMock();
 
         $loader->setTemplateDir(__DIR__)
             ->setTemplate($this->_tempFile);
 
-        $rendered = $loader->render(["var1" => "foo", "var2" => "bar"]);
+        $rendered = $loader->render(["var1" => "foo", "var2" => "bar"], Loader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nfoobar", $rendered);
 
         return $loader;
@@ -101,11 +104,15 @@ EOD;
      */
     public function testVarCaching($loader)
     {
-        $rendered = $loader->render(["var1" => "baz"]);
+        $rendered = $loader->render(["var1" => "baz"], Loader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
-        $rendered = $loader->render(["var1" => "var1", "var2" => "var2"], false);
+        $rendered = $loader->render(
+            ["var1" => "var1", "var2" => "var2"],
+            Loader::TPL_RETURN,
+            Loader::TPL_NO_CACHE_VARS
+        );
         $this->assertEquals($this->_tempContent . "\nvar1var2", $rendered);
-        $rendered = $loader->render();
+        $rendered = $loader->render([], Loader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
     }
 }
