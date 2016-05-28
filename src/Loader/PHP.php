@@ -88,7 +88,9 @@ class PHP
         }
 
         if (file_exists($this->_templateDir . $this->_template) === false) {
-            // throw exception
+            throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
+                "Requested template file ({$this->_templateDir}{$this->_template})was not found."
+            );
         }
 
         extract($data);
