@@ -74,13 +74,13 @@ class PHP
      * and load the template only with the currently passed in data, bool(false)
      * has to be sent as the second parameter.
      *
-     * @param array $data Template data to be passed to the template
+     * @param array $data Template data to be passed to the template. Default []
      * @param bool $cacheData Cache template data. Default bool(true)
      * @return string
      *
      * @exceptions SlaxWeb\View\Exception\TemplateNotFoundException
      */
-    public function render(array $data, bool $cacheData = true)
+    public function render(array $data = [], bool $cacheData = true)
     {
         if ($cacheData) {
             $this->_cachedData = array_merge($this->_cachedData, $data);

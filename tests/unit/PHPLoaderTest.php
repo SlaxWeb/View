@@ -61,7 +61,7 @@ EOD;
      */
     protected function tearDown()
     {
-        unlink($this->_tempFile);
+        unlink(__DIR__ . DIRECTORY_SEPARATOR . $this->_tempFile);
     }
 
     /**
@@ -92,10 +92,16 @@ EOD;
      * and that it does not cache any variables when instructed not to, by passing
      * bool(false) value as second input parameter to the 'render' method.
      *
+     * @param SlaxWeb\View\Loader\PHP_mock $loader PHP Template Loader mock object
      * @return void
      */
-    public function testVarCaching()
+    public function testVarCaching($loader)
     {
-
+        $rendered = $loader->render(["var1" => "baz"]);
+        $this->assertEquals($this->_tempContent . "\nbaz\nbar", $rendered);
+        $rendered = $loader->render(["var1" => "var1", "var2" => "var2"], false);
+        $this->assertEquals($this->_tempContent . "\nvar1\nvar2", $rendered);
+        $rendered = $loader->render();
+        $this->assertEquals($this->_tempContent . "\nfoo\nbar", $rendered);
     }
 }
