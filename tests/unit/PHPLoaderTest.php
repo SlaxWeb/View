@@ -13,6 +13,7 @@
  */
 namespace SlaxWeb\View\Tests\Unit;
 
+use SlaxWeb\View\AbstractLoader;
 use SlaxWeb\View\Loader\PHP as Loader;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -94,7 +95,7 @@ EOD;
     {
         $loader = $this->_loader;
 
-        $rendered = $loader->render(["var1" => "foo", "var2" => "bar"], Loader::TPL_RETURN);
+        $rendered = $loader->render(["var1" => "foo", "var2" => "bar"], AbstractLoader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nfoobar", $rendered);
 
         return $loader;
@@ -114,15 +115,15 @@ EOD;
      */
     public function testVarCaching($loader)
     {
-        $rendered = $loader->render(["var1" => "baz"], Loader::TPL_RETURN);
+        $rendered = $loader->render(["var1" => "baz"], AbstractLoader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
         $rendered = $loader->render(
             ["var1" => "var1", "var2" => "var2"],
-            Loader::TPL_RETURN,
-            Loader::TPL_NO_CACHE_VARS
+            AbstractLoader::TPL_RETURN,
+            AbstractLoader::TPL_NO_CACHE_VARS
         );
         $this->assertEquals($this->_tempContent . "\nvar1var2", $rendered);
-        $rendered = $loader->render([], Loader::TPL_RETURN);
+        $rendered = $loader->render([], AbstractLoader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
     }
 

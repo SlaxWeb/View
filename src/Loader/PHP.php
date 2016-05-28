@@ -14,91 +14,10 @@
  */
 namespace SlaxWeb\View\Loader;
 
-use Symfony\Component\HttpFoundation\Response;
+use SlaxWeb\View\AbstractLoader;
 
-class PHP
+class PHP extends AbstractLoader
 {
-    /**
-     * Template variables caching
-     */
-    const TPL_CACHE_VARS = 100;
-    const TPL_NO_CACHE_VARS = 101;
-
-    /**
-     * Template render output control
-     */
-    const TPL_RETURN = 200;
-    const TPL_OUTPUT = 201;
-
-    /**
-     * Response
-     *
-     * @var \Symfony\Component\HttpFoundation\Response
-     */
-    protected $_response = null;
-
-    /**
-     * Template file
-     *
-     * @var string
-     */
-    protected $_template = "";
-
-    /**
-     * Template directory
-     *
-     * @var string
-     */
-    protected $_templateDir = "";
-
-    /**
-     * Cached template data
-     *
-     * @var array
-     */
-    protected $_cachedData = [];
-
-    /**
-     * Set the template
-     *
-     * Sets the template filename.
-     *
-     * @param string $template Name of the template file
-     * @return self
-     */
-    public function setTemplate(string $template): self
-    {
-        $this->_template = $template;
-        return $this;
-    }
-
-    /**
-     * Class constructor
-     *
-     * Assigns the dependant Response object to the class property. The View loader
-     * will automatically add template contents to as response body.
-     *
-     * @param \Symfony\Component\HttpFoundation\Response $response Response object
-     * @return void
-     */
-    public function __construct(Response $response)
-    {
-        $this->_response = $response;
-    }
-
-    /**
-     * Set the template directory
-     *
-     * Sets the template directory name.
-     *
-     * @param string $templateDir Name of the template directory
-     * @return self
-     */
-    public function setTemplateDir(string $templateDir): self
-    {
-        $this->_templateDir = rtrim($templateDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        return $this;
-    }
 
     /**
      * Render the template
@@ -124,10 +43,10 @@ class PHP
      */
     public function render(
         array $data = [],
-        int $return = self::TPL_OUTPUT,
-        int $cacheData = self::TPL_CACHE_VARS
+        int $return = AbstractLoader::TPL_OUTPUT,
+        int $cacheData = AbstractLoader::TPL_CACHE_VARS
     ): string {
-        if ($cacheData === self::TPL_CACHE_VARS) {
+        if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
             $this->_cachedData = array_merge($this->_cachedData, $data);
             $data = $this->_cachedData;
         }
@@ -146,7 +65,7 @@ class PHP
         $buffer = ob_get_contents();
         ob_end_clean();
 
-        if ($return === self::TPL_RETURN) {
+        if ($return === AbstractLoader::TPL_RETURN) {
             return $buffer;
         }
 
