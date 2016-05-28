@@ -14,9 +14,17 @@
 namespace SlaxWeb\View\Tests\Unit;
 
 use SlaxWeb\View\Loader\PHP as Loader;
+use Symfony\Component\HttpFoundation\Response;
 
 class PHPLoaderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Template Loader Mock
+     *
+     * @var SlaxWeb\View\Loader\PHP_mock
+     */
+    protected $_loader = null;
+
     /**
      * Temporary test template file
      *
@@ -52,6 +60,14 @@ $this->_tempContent
 <?= \$var2; ?>
 EOD;
         file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . $this->_tempFile, $template);
+
+        $this->_loader = $this->getMockBuilder(Loader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $this->_loader->setTemplateDir(__DIR__)
+            ->setTemplate($this->_tempFile);
     }
 
     /**
@@ -76,13 +92,7 @@ EOD;
      */
     public function testRender()
     {
-        $loader = $this->getMockBuilder(Loader::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        $loader->setTemplateDir(__DIR__)
-            ->setTemplate($this->_tempFile);
+        $loader = $this->_loader;
 
         $rendered = $loader->render(["var1" => "foo", "var2" => "bar"], Loader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nfoobar", $rendered);
@@ -114,5 +124,31 @@ EOD;
         $this->assertEquals($this->_tempContent . "\nvar1var2", $rendered);
         $rendered = $loader->render([], Loader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
+    }
+
+    /**
+     * Test Template Output
+     *
+     * Ensure that template is being output through the Response object.
+     *
+     * @return void
+     */
+    public function testTemplateOutput()
+    {
+        $response = $this->getMockBuilder(Response::class)
+            ->setMethods(["setContent", "getContent"])
+            ->getMock();
+
+        $response->expects($this->once())
+            ->method("getContent")
+            ->willReturn("");
+
+        $response->expects($this->once())
+            ->method("setContent")
+            ->with($this->_tempContent . "\nfoobar");
+
+        $loader = $this->_loader;
+        $loader->__construct($response);
+        $loader->render(["var1" => "foo", "var2" => "bar"]);
     }
 }

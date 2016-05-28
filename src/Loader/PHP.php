@@ -111,7 +111,9 @@ class PHP
      *
      * The Render method will automatically add contents of the rendered template
      * file to the Response object as response body. If you wish to retrieve the
-     * contents back, pass in constant TPL_RETURN as the second parameter.
+     * contents back, pass in constant TPL_RETURN as the second parameter. When
+     * the rendered template is only added to the Response object, an empty string
+     * is returned.
      *
      * @param array $data Template data to be passed to the template. Default []
      * @param int $return Output or return rendered template. Default self::TPL_OUTPUT
@@ -120,8 +122,11 @@ class PHP
      *
      * @exceptions SlaxWeb\View\Exception\TemplateNotFoundException
      */
-    public function render(array $data = [], int $return = self::TPL_OUTPUT, int $cacheData = self::TPL_CACHE_VARS)
-    {
+    public function render(
+        array $data = [],
+        int $return = self::TPL_OUTPUT,
+        int $cacheData = self::TPL_CACHE_VARS
+    ): string {
         if ($cacheData === self::TPL_CACHE_VARS) {
             $this->_cachedData = array_merge($this->_cachedData, $data);
             $data = $this->_cachedData;
@@ -129,7 +134,7 @@ class PHP
 
         if (file_exists($this->_templateDir . $this->_template) === false) {
             throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
-                "Requested template file ({$this->_templateDir}{$this->_template})was not found."
+                "Requested template file ({$this->_templateDir}{$this->_template}) was not found."
             );
         }
 
@@ -145,6 +150,7 @@ class PHP
             return $buffer;
         }
 
-        $this->_response->setContent($this->_response->getContent . $buffer);
+        $this->_response->setContent($this->_response->getContent() . $buffer);
+        return "";
     }
 }
