@@ -12,7 +12,7 @@
  * @link      https://github.com/slaxweb/
  * @version   0.3
  */
-namespace SlaxWeb\Router\Service;
+namespace SlaxWeb\View\Service;
 
 use Pimple\Container;
 
@@ -26,7 +26,7 @@ class Provider implements \Pimple\ServiceProviderInterface
      * @param \Pimple\Container $container DIC
      * @return void
      */
-    public function Register(Container $container)
+    public function register(Container $container)
     {
         $container["tplLoader.service"] = function (Container $container) {
             return new \SlaxWeb\View\Loader\PHP($container["response.service"], $container["logger.service"]());
