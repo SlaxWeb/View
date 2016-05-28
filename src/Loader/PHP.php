@@ -18,7 +18,6 @@ use SlaxWeb\View\AbstractLoader;
 
 class PHP extends AbstractLoader
 {
-
     /**
      * Render the template
      *
