@@ -94,6 +94,8 @@ EOD;
      *
      * @param SlaxWeb\View\Loader\PHP_mock $loader PHP Template Loader mock object
      * @return void
+     *
+     * @depends testRender
      */
     public function testVarCaching($loader)
     {
