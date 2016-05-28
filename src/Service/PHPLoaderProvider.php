@@ -16,7 +16,7 @@ namespace SlaxWeb\View\Service;
 
 use Pimple\Container;
 
-class Provider implements \Pimple\ServiceProviderInterface
+class PHPLoaderProvider implements \Pimple\ServiceProviderInterface
 {
     /**
      * Register provider
