@@ -93,6 +93,7 @@ class PHP
 
         extract($data);
 
+        $buffer = "";
         ob_start();
         include $this->_templateDir . $this->_template;
         $buffer = ob_get_contents();

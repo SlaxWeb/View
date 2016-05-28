@@ -74,13 +74,15 @@ EOD;
      */
     public function testRender()
     {
-        $loader = $this->createMock(\SlaxWeb\View\Loader\PHP::class);
+        $loader = $this->getMockBuilder(\SlaxWeb\View\Loader\PHP::class)
+            ->setMethods(null)
+            ->getMock();
 
         $loader->setTemplateDir(__DIR__)
             ->setTemplate($this->_tempFile);
 
         $rendered = $loader->render(["var1" => "foo", "var2" => "bar"]);
-        $this->assertEquals($this->_tempContent . "\nfoo\nbar", $rendered);
+        $this->assertEquals($this->_tempContent . "\nfoobar", $rendered);
 
         return $loader;
     }
@@ -100,10 +102,10 @@ EOD;
     public function testVarCaching($loader)
     {
         $rendered = $loader->render(["var1" => "baz"]);
-        $this->assertEquals($this->_tempContent . "\nbaz\nbar", $rendered);
+        $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
         $rendered = $loader->render(["var1" => "var1", "var2" => "var2"], false);
-        $this->assertEquals($this->_tempContent . "\nvar1\nvar2", $rendered);
+        $this->assertEquals($this->_tempContent . "\nvar1var2", $rendered);
         $rendered = $loader->render();
-        $this->assertEquals($this->_tempContent . "\nfoo\nbar", $rendered);
+        $this->assertEquals($this->_tempContent . "\nbazbar", $rendered);
     }
 }
