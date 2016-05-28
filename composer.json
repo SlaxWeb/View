@@ -10,7 +10,8 @@
     ],
     "require": {
         "php":  ">=7.0.0",
-        "symfony/http-foundation": "~3.0"
+        "symfony/http-foundation": "~3.0",
+        "slaxweb/logger": "dev-develop"
     },
     "require-dev": {
         "codeception/codeception": "dev-master",

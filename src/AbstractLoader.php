@@ -14,6 +14,7 @@
  */
 namespace SlaxWeb\View;
 
+use \Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractLoader
@@ -36,6 +37,13 @@ abstract class AbstractLoader
      * @var \Symfony\Component\HttpFoundation\Response
      */
     protected $_response = null;
+
+    /**
+     * Logger
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $_logger = null;
 
     /**
      * Template file
@@ -65,11 +73,15 @@ abstract class AbstractLoader
      * will automatically add template contents to as response body.
      *
      * @param \Symfony\Component\HttpFoundation\Response $response Response object
+     * @param \Psr\Log\LoggerInterface $logger PSR4 compatible Logger object
      * @return void
      */
-    public function __construct(Response $response)
+    public function __construct(Response $response, Logger $logger)
     {
         $this->_response = $response;
+        $this->_logger = $logger;
+
+        $this->_logger->info("PHP Template Loader initialized");
     }
 
     /**
@@ -83,6 +95,7 @@ abstract class AbstractLoader
     public function setTemplate(string $template): self
     {
         $this->_template = $template;
+        $this->_logger->debug("Template file set to loader.", ["template" => $this->_template]);
         return $this;
     }
 
@@ -97,6 +110,7 @@ abstract class AbstractLoader
     public function setTemplateDir(string $templateDir): self
     {
         $this->_templateDir = rtrim($templateDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->_logger->debug("Template directory set to loader." , ["templateDir" => $this->_templateDir]);
         return $this;
     }
 

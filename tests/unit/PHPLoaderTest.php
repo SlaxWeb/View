@@ -15,17 +15,11 @@ namespace SlaxWeb\View\Tests\Unit;
 
 use SlaxWeb\View\AbstractLoader;
 use SlaxWeb\View\Loader\PHP as Loader;
+use \Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\HttpFoundation\Response;
 
 class PHPLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * Template Loader Mock
-     *
-     * @var SlaxWeb\View\Loader\PHP_mock
-     */
-    protected $_loader = null;
-
     /**
      * Temporary test template file
      *
@@ -61,14 +55,6 @@ $this->_tempContent
 <?= \$var2; ?>
 EOD;
         file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . $this->_tempFile, $template);
-
-        $this->_loader = $this->getMockBuilder(Loader::class)
-            ->disableOriginalConstructor()
-            ->setMethods(null)
-            ->getMock();
-
-        $this->_loader->setTemplateDir(__DIR__)
-            ->setTemplate($this->_tempFile);
     }
 
     /**
@@ -93,7 +79,18 @@ EOD;
      */
     public function testRender()
     {
-        $loader = $this->_loader;
+        $loader = $this->getMockBuilder(Loader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $response = $this->createMock(Response::class);
+        $logger = $this->createMock(Logger::class);
+
+        $loader->__construct($response, $logger);
+
+        $loader->setTemplateDir(__DIR__)
+            ->setTemplate($this->_tempFile);
 
         $rendered = $loader->render(["var1" => "foo", "var2" => "bar"], AbstractLoader::TPL_RETURN);
         $this->assertEquals($this->_tempContent . "\nfoobar", $rendered);
@@ -148,8 +145,19 @@ EOD;
             ->method("setContent")
             ->with($this->_tempContent . "\nfoobar");
 
-        $loader = $this->_loader;
-        $loader->__construct($response);
+        $loader = $this->getMockBuilder(Loader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+        $logger = $this->createMock(Logger::class);
+
+        $loader->__construct($response, $logger);
+
+        $loader->setTemplateDir(__DIR__)
+            ->setTemplate($this->_tempFile);
+
+        $loader->__construct($response, $logger);
+
         $loader->render(["var1" => "foo", "var2" => "bar"]);
     }
 }

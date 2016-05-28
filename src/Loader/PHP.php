@@ -45,12 +45,19 @@ class PHP extends AbstractLoader
         int $return = AbstractLoader::TPL_OUTPUT,
         int $cacheData = AbstractLoader::TPL_CACHE_VARS
     ): string {
+        $this->_logger->info("Rendering template", ["template" => $this->_template]);
+
         if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
             $this->_cachedData = array_merge($this->_cachedData, $data);
+            $this->_logger->info("Data combined and cached");
             $data = $this->_cachedData;
         }
 
         if (file_exists($this->_templateDir . $this->_template) === false) {
+            $this->_logger->error(
+                "Template does not exist or is not readable",
+                ["template" => $this->_templateDir . $this->_template]
+            );
             throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
                 "Requested template file ({$this->_templateDir}{$this->_template}) was not found."
             );
@@ -62,13 +69,19 @@ class PHP extends AbstractLoader
         ob_start();
         include $this->_templateDir . $this->_template;
         $buffer = ob_get_contents();
+        $this->_logger->debug(
+            "Template loaded and rendered.",
+            ["template" => $this->_templateDir . $this->_template, "data" => $data, "rendered" => $buffer]
+        );
         ob_end_clean();
 
         if ($return === AbstractLoader::TPL_RETURN) {
+            $this->_logger->info("Returning rendered template");
             return $buffer;
         }
 
         $this->_response->setContent($this->_response->getContent() . $buffer);
+        $this->_logger->info("Rendered template appended to Response contents");
         return "";
     }
 }
