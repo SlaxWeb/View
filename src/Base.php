@@ -59,7 +59,8 @@ class Base
         $this->_loader->setTemplateDir($config["view.baseDir"]);
 
         if ($this->template === "" && $config["view.autoTplName"] === true) {
-            $this->template = substr(get_class($this), strrpos("\\") + 1);
+            $class = get_class($this);
+            $this->template = substr($class, strrpos($class, "\\") + 1);
         }
     }
 

@@ -18,6 +18,8 @@ use SlaxWeb\View\AbstractLoader;
 
 class PHP extends AbstractLoader
 {
+    protected $_fileExt = "php";
+
     /**
      * Render the template
      *
@@ -53,13 +55,15 @@ class PHP extends AbstractLoader
             $data = $this->_cachedData;
         }
 
-        if (file_exists($this->_templateDir . $this->_template) === false) {
+        $template = rtrim($this->_templateDir . $this->_template, ".{$this->_fileExt}") . ".{$this->_fileExt}";
+
+        if (file_exists($template) === false) {
             $this->_logger->error(
                 "Template does not exist or is not readable",
-                ["template" => $this->_templateDir . $this->_template]
+                ["template" => $template]
             );
             throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
-                "Requested template file ({$this->_templateDir}{$this->_template}) was not found."
+                "Requested template file ({$template}) was not found."
             );
         }
 
@@ -67,11 +71,11 @@ class PHP extends AbstractLoader
 
         $buffer = "";
         ob_start();
-        include $this->_templateDir . $this->_template;
+        include $template;
         $buffer = ob_get_contents();
         $this->_logger->debug(
             "Template loaded and rendered.",
-            ["template" => $this->_templateDir . $this->_template, "data" => $data, "rendered" => $buffer]
+            ["template" => $template, "data" => $data, "rendered" => $buffer]
         );
         ob_end_clean();
 
