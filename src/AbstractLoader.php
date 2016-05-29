@@ -81,6 +81,10 @@ abstract class AbstractLoader
         $this->_response = $response;
         $this->_logger = $logger;
 
+        if (method_exists($this, "init")) {
+            $this->init();
+        }
+
         $this->_logger->info("PHP Template Loader initialized");
     }
 
