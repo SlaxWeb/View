@@ -16,26 +16,18 @@
  *
  * Where all of your template files are located.
  */
-$configuration["view.baseDir"] = __DIR__ . "/../../../Template/";
+$configuration["baseDir"] = __DIR__ . "/../../../Template/";
 
 /*
  * Automatically set template name if none was set before
  */
-$configuration["view.autoTplName"] = true;
+$configuration["autoTplName"] = true;
 
 /*
  * Template loader
  *
  * Available options are:
  * - PHP
+ * - Twig (only if slaxweb/view-twig subcomponent is installed)
  */
-$configuration["view.loader"] = "PHP";
-
-/*
- * Load View Component Provider
- *
- * Do not change, unless you know what you are doing. You may break your system.
- */
-$configuration["app.providerList"] = [
-    \SlaxWeb\View\Service\Provider::class
-];
+$configuration["loader"] = "PHP";
