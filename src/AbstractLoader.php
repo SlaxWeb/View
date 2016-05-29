@@ -165,7 +165,7 @@ abstract class AbstractLoader
             );
         }
 
-        $this->_load($template, $data);
+        $buffer = $this->_load($template, $data);
         $this->_logger->debug(
             "Template loaded and rendered.",
             ["template" => $template, "data" => $data, "rendered" => $buffer]
