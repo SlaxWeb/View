@@ -12,8 +12,11 @@
     "configFiles": [
         "view.php"
     ],
-    "subcomponents": [
-        "view-twig"
-    ],
-    "sub-required": false
+    "subcomponents": {
+        "list": {
+            "view-twig": "dev-develop"
+        },
+        "required": false,
+        "multi": false
+    }
 }
