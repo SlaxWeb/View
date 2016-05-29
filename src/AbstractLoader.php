@@ -140,9 +140,56 @@ abstract class AbstractLoader
      *
      * @exceptions SlaxWeb\View\Exception\TemplateNotFoundException
      */
-    abstract public function render(
+    public function render(
         array $data = [],
         int $return = self::TPL_OUTPUT,
         int $cacheData = self::TPL_CACHE_VARS
-    ): string;
+    ): string {
+        $this->_logger->info("Rendering template", ["template" => $this->_template]);
+
+        if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
+            $this->_cachedData = array_merge($this->_cachedData, $data);
+            $this->_logger->info("Data combined and cached");
+            $data = $this->_cachedData;
+        }
+
+        $template = rtrim($this->_templateDir . $this->_template, ".{$this->_fileExt}") . ".{$this->_fileExt}";
+
+        if (file_exists($template) === false) {
+            $this->_logger->error(
+                "Template does not exist or is not readable",
+                ["template" => $template]
+            );
+            throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
+                "Requested template file ({$template}) was not found."
+            );
+        }
+
+        $this->_load($template, $data);
+        $this->_logger->debug(
+            "Template loaded and rendered.",
+            ["template" => $template, "data" => $data, "rendered" => $buffer]
+        );
+
+        if ($return === AbstractLoader::TPL_RETURN) {
+            $this->_logger->info("Returning rendered template");
+            return $buffer;
+        }
+
+        $this->_response->setContent($this->_response->getContent() . $buffer);
+        $this->_logger->info("Rendered template appended to Response contents");
+        return "";
+    }
+
+    /**
+     * Load template
+     *
+     * Load the template file. Defined as abstract, because each loader will load
+     * its template files in a different way.
+     *
+     * @param string $template Path to the template file
+     * @param array $data View data
+     * @return string
+     */
+    abstract protected function _load(string $template, array $data): string;
 }
