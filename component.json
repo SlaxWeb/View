@@ -2,12 +2,14 @@
     "name": "view",
     "description": "View Component for SlaxWeb Framework",
     "type": "main",
-    "providers": [
-        "\\SlaxWeb\\View\\Service\\Provider"
-    ],
-    "commands": [],
-    "hooks": [],
-    "config": [
+    "providers": {
+        "app": [
+            "\\SlaxWeb\\View\\Service\\Provider"
+        ],
+        "commands": [],
+        "hooks": []
+    },
+    "configFiles": [
         "view.php"
     ],
     "subcomponents": {}
