@@ -153,7 +153,8 @@ abstract class AbstractLoader
             $data = $this->_cachedData;
         }
 
-        $template = rtrim($this->_templateDir . $this->_template, ".{$this->_fileExt}") . ".{$this->_fileExt}";
+        $template = preg_replace("~{$this->_fileExt}$~", "", $this->_templateDir . $this->_template)
+            . ".{$this->_fileExt}";
 
         if (file_exists($template) === false) {
             $this->_logger->error(
