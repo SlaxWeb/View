@@ -27,6 +27,13 @@ class Base
     public $template = "";
 
     /**
+     * Sub views
+     *
+     * @var array<\SlaxWeb\View\Base>
+     */
+    protected $_subViews = [];
+
+    /**
      * Config
      *
      * @var \SlaxWeb\Config\Container
@@ -62,6 +69,22 @@ class Base
             $class = get_class($this);
             $this->template = substr($class, strrpos($class, "\\") + 1);
         }
+    }
+
+    /**
+     * Add SubView
+     *
+     * Adds a SubView to the local container. The '$name' parameter is the name
+     * under which the rendered subview is then available in the main view.
+     *
+     * @param string $name Name of the SubView
+     * @param \SlaxWeb\View\Base $subView Sub View object extended from the same Base class
+     * @return self
+     */
+    public function addSubView(string $name, Base $subView): self
+    {
+        $this->_subViews[$name] = $subView;
+        return $this;
     }
 
     /**
