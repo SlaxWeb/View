@@ -27,6 +27,13 @@ class Base
     public $template = "";
 
     /**
+     * View Data
+     *
+     * @var array
+     */
+    public $viewData = [];
+
+    /**
      * Sub views
      *
      * @var array<\SlaxWeb\View\Base>
@@ -103,8 +110,9 @@ class Base
         int $cacheData = Loader::TPL_CACHE_VARS
     ) {
         $this->_loader->setTemplate($this->template);
+        $this->_renderSubViews();
         try {
-            $buffer = $this->_loader->render($data, $return, $cacheData);
+            $buffer = $this->_loader->render(array_merge($this->viewData, $data), $return, $cacheData);
         } catch (Exception\TemplateNotFoundException $e) {
             // @todo: display error message
             return false;
@@ -114,5 +122,19 @@ class Base
         }
 
         return true;
+    }
+
+    /**
+     * Render SubViews
+     *
+     * Render the SubViews and add rendered results to the View Data array.
+     *
+     * @return void
+     */
+    public function _renderSubViews()
+    {
+        foreach ($this->_subViews as $name => $view) {
+            $this->viewData["subview_{$name}"] = $view->render([], Loader::TPL_RETURN);
+        }
     }
 }
