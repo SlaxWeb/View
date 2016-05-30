@@ -153,7 +153,7 @@ abstract class AbstractLoader
             $data = $this->_cachedData;
         }
 
-        $template = preg_replace("~{$this->_fileExt}$~", "", $this->_template)
+        $template = preg_replace("~\.{$this->_fileExt}$~", "", $this->_template)
             . ".{$this->_fileExt}";
 
         if (file_exists($this->_templateDir . $template) === false) {

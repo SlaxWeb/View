@@ -27,6 +27,20 @@ class Base
     public $template = "";
 
     /**
+     * View Data
+     *
+     * @var array
+     */
+    public $viewData = [];
+
+    /**
+     * Sub views
+     *
+     * @var array<\SlaxWeb\View\Base>
+     */
+    protected $_subViews = [];
+
+    /**
      * Config
      *
      * @var \SlaxWeb\Config\Container
@@ -65,6 +79,22 @@ class Base
     }
 
     /**
+     * Add SubView
+     *
+     * Adds a SubView to the local container. The '$name' parameter is the name
+     * under which the rendered subview is then available in the main view.
+     *
+     * @param string $name Name of the SubView
+     * @param \SlaxWeb\View\Base $subView Sub View object extended from the same Base class
+     * @return self
+     */
+    public function addSubView(string $name, Base $subView): self
+    {
+        $this->_subViews[$name] = $subView;
+        return $this;
+    }
+
+    /**
      * Render view
      *
      * Renders the view by rendering the template with the provided template loader.
@@ -79,9 +109,10 @@ class Base
         int $return = Loader::TPL_OUTPUT,
         int $cacheData = Loader::TPL_CACHE_VARS
     ) {
+        $this->_renderSubViews();
         $this->_loader->setTemplate($this->template);
         try {
-            $buffer = $this->_loader->render($data, $return, $cacheData);
+            $buffer = $this->_loader->render(array_merge($this->viewData, $data), $return, $cacheData);
         } catch (Exception\TemplateNotFoundException $e) {
             // @todo: display error message
             return false;
@@ -91,5 +122,19 @@ class Base
         }
 
         return true;
+    }
+
+    /**
+     * Render SubViews
+     *
+     * Render the SubViews and add rendered results to the View Data array.
+     *
+     * @return void
+     */
+    public function _renderSubViews()
+    {
+        foreach ($this->_subViews as $name => $view) {
+            $this->viewData["subview_{$name}"] = $view->render([], Loader::TPL_RETURN);
+        }
     }
 }
