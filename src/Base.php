@@ -109,8 +109,8 @@ class Base
         int $return = Loader::TPL_OUTPUT,
         int $cacheData = Loader::TPL_CACHE_VARS
     ) {
-        $this->_loader->setTemplate($this->template);
         $this->_renderSubViews();
+        $this->_loader->setTemplate($this->template);
         try {
             $buffer = $this->_loader->render(array_merge($this->viewData, $data), $return, $cacheData);
         } catch (Exception\TemplateNotFoundException $e) {
