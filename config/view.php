@@ -16,7 +16,7 @@
  *
  * Where all of your template files are located.
  */
-$configuration["baseDir"] = __DIR__ . "/../../../Template/";
+$configuration["baseDir"] = __DIR__ . "/../Template/";
 
 /*
  * Automatically set template name if none was set before
