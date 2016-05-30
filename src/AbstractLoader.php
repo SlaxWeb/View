@@ -162,7 +162,7 @@ abstract class AbstractLoader
                 ["template" => $this->_templateDir . $template]
             );
             throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
-                "Requested template file ({$this->_templateDir . $template}) was not found."
+                "Requested template file ({$this->_templateDir}{$template}) was not found."
             );
         }
 
