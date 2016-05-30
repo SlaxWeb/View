@@ -36,7 +36,7 @@ class PHP extends AbstractLoader
 
         $buffer = "";
         ob_start();
-        include $template;
+        include $this->_templateDir . $template;
         $buffer = ob_get_contents();
         ob_end_clean();
         return $buffer;

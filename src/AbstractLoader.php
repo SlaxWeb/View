@@ -153,16 +153,16 @@ abstract class AbstractLoader
             $data = $this->_cachedData;
         }
 
-        $template = preg_replace("~{$this->_fileExt}$~", "", $this->_templateDir . $this->_template)
+        $template = preg_replace("~{$this->_fileExt}$~", "", $this->_template)
             . ".{$this->_fileExt}";
 
-        if (file_exists($template) === false) {
+        if (file_exists($this->_templateDir . $template) === false) {
             $this->_logger->error(
                 "Template does not exist or is not readable",
-                ["template" => $template]
+                ["template" => $this->_templateDir . $template]
             );
             throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
-                "Requested template file ({$template}) was not found."
+                "Requested template file ({$this->_templateDir . $template}) was not found."
             );
         }
 
