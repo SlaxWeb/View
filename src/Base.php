@@ -159,10 +159,10 @@ class Base
         }
 
         // load main view into layout
-        if ($layout !== null) {
+        if ($this->_layout !== null) {
             $buffer = $this->_layout->render(
                 array_merge($this->viewData, ["mainView" => $buffer]),
-                $Loader::TPL_RETURN,
+                Loader::TPL_RETURN,
                 $cacheData
             );
         }
