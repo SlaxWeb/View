@@ -41,7 +41,11 @@ class Provider implements \Pimple\ServiceProviderInterface
             function (string $view) use ($container) {
                 // @todo: dynamic class namespaces!
                 $class = "\\App\\View\\{$view}";
-                return new $class($container["config.service"], $container["tplLoader.service"]);
+                return new $class(
+                    $container["config.service"],
+                    $container["tplLoader.service"],
+                    $container["response.service"]
+                );
             }
         );
     }
