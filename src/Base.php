@@ -34,6 +34,13 @@ class Base
     public $viewData = [];
 
     /**
+     * Layout
+     *
+     * @var \SlaxWeb\View\Base
+     */
+    protected $_layout = null;
+
+    /**
      * Sub views
      *
      * @var array<\SlaxWeb\View\Base>
@@ -76,6 +83,21 @@ class Base
             $class = get_class($this);
             $this->template = substr($class, strrpos($class, "\\") + 1);
         }
+    }
+
+    /**
+     * Set Layout
+     *
+     * Sets the received View class as layout if it is supplied. If no parameter
+     * is set, then the layout will not be used.
+     *
+     * @param \SlaxWeb\View\Base $layout Layout view class
+     * @return self
+     */
+    public function setLayout(Base $layout = null): self
+    {
+        $this->_layout = $layout;
+        return $this;
     }
 
     /**
