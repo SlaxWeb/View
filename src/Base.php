@@ -16,6 +16,7 @@ namespace SlaxWeb\View;
 
 use SlaxWeb\Config\Container as Config;
 use SlaxWeb\View\AbstractLoader as Loader;
+use \Symfony\Component\HttpFoundation\Response;
 
 class Base
 {
@@ -32,6 +33,13 @@ class Base
      * @var array
      */
     public $viewData = [];
+
+    /**
+     * Layout
+     *
+     * @var \SlaxWeb\View\Base
+     */
+    protected $_layout = null;
 
     /**
      * Sub views
@@ -55,6 +63,13 @@ class Base
     protected $_loader = null;
 
     /**
+     * Output
+     *
+     * @var \Symfony\Component\HttpFoundation\Response
+     */
+    protected $_response = null;
+
+    /**
      * Class constructor
      *
      * Instantiate the view, by assigning its dependencies to the class properties.
@@ -63,12 +78,14 @@ class Base
      *
      * @param \SlaxWeb\Config\Container $config Configuration container
      * @param \SlaxWeb\View\AbstractLoader $loader Template file loader
+     * @param \Symfony\Component\HttpFoundation\Response $response Response object
      * @return void
      */
-    public function __construct(Config $config, Loader $loader)
+    public function __construct(Config $config, Loader $loader, Response $response)
     {
         $this->_config = $config;
         $this->_loader = $loader;
+        $this->_response = $response;
 
         $this->_loader->setTemplateDir($config["view.baseDir"]);
 
@@ -76,6 +93,21 @@ class Base
             $class = get_class($this);
             $this->template = substr($class, strrpos($class, "\\") + 1);
         }
+    }
+
+    /**
+     * Set Layout
+     *
+     * Sets the received View class as layout if it is supplied. If no parameter
+     * is set, then the layout will not be used.
+     *
+     * @param \SlaxWeb\View\Base $layout Layout view class
+     * @return self
+     */
+    public function setLayout(Base $layout = null): self
+    {
+        $this->_layout = $layout;
+        return $this;
     }
 
     /**
@@ -109,17 +141,38 @@ class Base
         int $return = Loader::TPL_OUTPUT,
         int $cacheData = Loader::TPL_CACHE_VARS
     ) {
+        // merge pre-existing view data
+        $this->viewData = array_merge($this->viewData, $data);
+
+        // render the subviews
         $this->_renderSubViews();
+
+        // set the template name to the loader
         $this->_loader->setTemplate($this->template);
+
+        // load main view
         try {
-            $buffer = $this->_loader->render(array_merge($this->viewData, $data), $return, $cacheData);
+            $buffer = $this->_loader->render($this->viewData, Loader::TPL_RETURN, $cacheData);
         } catch (Exception\TemplateNotFoundException $e) {
             // @todo: display error message
             return false;
         }
+
+        // load main view into layout
+        if ($this->_layout !== null) {
+            $buffer = $this->_layout->render(
+                array_merge($this->viewData, ["mainView" => $buffer]),
+                Loader::TPL_RETURN,
+                $cacheData
+            );
+        }
+
         if ($return === Loader::TPL_RETURN) {
             return $buffer;
         }
+
+        // set rendered template to output object
+        $this->_response->setContent($this->_response->getContent() . $buffer);
 
         return true;
     }
