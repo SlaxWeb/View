@@ -31,3 +31,13 @@ $configuration["autoTplName"] = true;
  * - Twig (only if slaxweb/view-twig subcomponent is installed)
  */
 $configuration["loader"] = "PHP";
+
+/*
+ * View class namespace
+ *
+ * The namespace in which the View classes are defined.
+ *
+ * NOT: If you change the autoloader config, you have to change this configuration
+ * as well. If you fail to do so, the "View Class Loader" will no longer work.
+ */
+$configuration["classNamespace"] = "\\App\\View\\";
