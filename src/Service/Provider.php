@@ -39,7 +39,9 @@ class Provider implements \Pimple\ServiceProviderInterface
         // Define view class loader
         $container["loadView.service"] = $container->protect(
             function (string $view) use ($container) {
-                $class = rtrim($container["config.service"]["view.classNamespace"], "\\") . "\\" . $view;
+                $class = rtrim($container["config.service"]["view.classNamespace"], "\\")
+                    . "\\"
+                    . str_replace("/", "\\", $view);
                 return new $class(
                     $container["config.service"],
                     $container["tplLoader.service"],
