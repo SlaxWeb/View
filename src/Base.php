@@ -90,8 +90,8 @@ class Base
         $this->_loader->setTemplateDir($config["view.baseDir"]);
 
         if ($this->template === "" && $config["view.autoTplName"] === true) {
-            $class = get_class($this);
-            $this->template = substr($class, strrpos($class, "\\") + 1);
+            $class = "\\" . get_class($this);
+            $this->template = str_replace("\\", "/", str_replace($config["view.classNamespace"], "", $class));
         }
     }
 
