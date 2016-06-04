@@ -14,7 +14,7 @@
  */
 namespace SlaxWeb\View;
 
-use \Psr\Log\LoggerInterface as Logger;
+use Psr\Log\LoggerInterface as Logger;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractLoader
@@ -44,6 +44,13 @@ abstract class AbstractLoader
      * @var \Psr\Log\LoggerInterface
      */
     protected $_logger = null;
+
+    /**
+     * Template file extension
+     *
+     * @var string
+     */
+    protected $_tplExt = "";
 
     /**
      * Template file
@@ -86,6 +93,21 @@ abstract class AbstractLoader
         }
 
         $this->_logger->info("PHP Template Loader initialized");
+    }
+
+    /**
+     * Set Template File Extension
+     *
+     * Sets the template file extension to the provided value. It automatically
+     * strips the leading dot if present.
+     *
+     * @param string $tplExt Template File Extension
+     * @return self
+     */
+    public function setTemplateExt(string $tplExt): self
+    {
+        $this->_tplExt = "." . ltrim($tplExt, ",");
+        return $this;
     }
 
     /**
@@ -153,8 +175,8 @@ abstract class AbstractLoader
             $data = $this->_cachedData;
         }
 
-        $template = preg_replace("~\.{$this->_fileExt}$~", "", $this->_template)
-            . ".{$this->_fileExt}";
+        $template = preg_replace("~\.{$this->_tplExt}$~", "", $this->_template)
+            . "{$this->_tplExt}";
 
         if (file_exists($this->_templateDir . $template) === false) {
             $this->_logger->error(

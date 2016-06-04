@@ -29,7 +29,8 @@ class PHPLoaderProvider implements \Pimple\ServiceProviderInterface
     public function register(Container $container)
     {
         $container["tplLoader.service"] = function (Container $container) {
-            return new \SlaxWeb\View\Loader\PHP($container["response.service"], $container["logger.service"]());
+            $loader = new \SlaxWeb\View\Loader\PHP($container["response.service"], $container["logger.service"]());
+            return $loader->setTemplateExt($container["config.service"]["view.templateExtension"]);
         };
     }
 }

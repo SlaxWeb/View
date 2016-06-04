@@ -24,6 +24,11 @@ $configuration["baseDir"] = __DIR__ . "/../Template/";
 $configuration["autoTplName"] = true;
 
 /*
+ * Template file extension
+ */
+$configuration["templateExtension"] = "php";
+
+/*
  * Template loader
  *
  * Available options are:
