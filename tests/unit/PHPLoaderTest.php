@@ -160,4 +160,24 @@ EOD;
 
         $loader->render(["var1" => "foo", "var2" => "bar"]);
     }
+
+    /*
+     * Test Missing Template
+     *
+     * Test missing template file throws an exception.
+     *
+     * @return void
+     */
+    public function testMissingTemplate()
+    {
+        $loader = $this->getMockBuilder(Loader::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $loader->__construct($this->createMock(Response::class), $this->createMock(Logger::class));
+
+        $this->expectException(\SlaxWeb\View\Exception\TemplateNotFoundException::class);
+        $loader->render();
+    }
 }
