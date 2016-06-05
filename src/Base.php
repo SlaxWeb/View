@@ -16,7 +16,7 @@ namespace SlaxWeb\View;
 
 use SlaxWeb\Config\Container as Config;
 use SlaxWeb\View\AbstractLoader as Loader;
-use \Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class Base
 {
@@ -90,8 +90,16 @@ class Base
         $this->_loader->setTemplateDir($config["view.baseDir"]);
 
         if ($this->template === "" && $config["view.autoTplName"] === true) {
-            $class = "\\" . get_class($this);
-            $this->template = str_replace("\\", "/", str_replace($config["view.classNamespace"], "", $class));
+            $class = get_class($this);
+            $this->template = str_replace(
+                "\\",
+                "/",
+                str_replace(
+                    ltrim($config["view.classNamespace"], "\\"),
+                    "",
+                    $class
+                )
+            );
         }
     }
 
