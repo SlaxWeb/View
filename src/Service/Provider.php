@@ -27,13 +27,9 @@ class Provider implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        // Register the correct loader provider based on config value
-        switch ($container["config.service"]["view.loader"]) {
-            case "PHP":
-                $container->register(new PHPLoaderProvider);
-                break;
-            default:
-                // @todo: raise exception
+        // Register the PHP view loader if configuration says so
+        if ($container["config.service"]["view.loader"]) {
+            $container->register(new PHPLoaderProvider);
         }
 
         // Define view class loader
