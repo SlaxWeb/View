@@ -38,11 +38,19 @@ class Provider implements \Pimple\ServiceProviderInterface
                 $class = rtrim($container["config.service"]["view.classNamespace"], "\\")
                     . "\\"
                     . str_replace("/", "\\", $view);
-                return new $class(
+                $view = new $class(
                     $container["config.service"],
                     $container["tplLoader.service"],
                     $container["response.service"]
                 );
+
+                if (method_exists($view, "init")) {
+                    $args = func_get_args();
+                    array_shift($args);
+                    $view->init(...$args);
+                }
+
+                return $view;
             }
         );
     }
