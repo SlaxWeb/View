@@ -4,7 +4,7 @@
  *
  * Thrown when the requested template file is not found.
  *
- * @package   SlaxWeb\Router
+ * @package   SlaxWeb\View
  * @author    Tomaz Lovrec <tomaz.lovrec@gmail.com>
  * @copyright 2016 (c) Tomaz Lovrec
  * @license   MIT <https://opensource.org/licenses/MIT>
