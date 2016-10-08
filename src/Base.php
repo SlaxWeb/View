@@ -149,6 +149,10 @@ class Base
         int $return = Loader::TPL_OUTPUT,
         int $cacheData = Loader::TPL_CACHE_VARS
     ) {
+        if (method_exists($this, "preRender")) {
+            $this->preRender($data);
+        }
+
         // merge pre-existing view data
         $this->viewData = array_merge($this->viewData, $data);
 
