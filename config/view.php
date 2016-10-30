@@ -18,6 +18,17 @@
  */
 $configuration["baseDir"] = __DIR__ . "/../Template/";
 
+/**
+ * Default page layout class
+ *
+ * The default page layout will be used for all views loaded, except for those which
+ * pass in the second parameter bool(false) to the 'loadView.service' call. Must
+ * contain full class name, without the 'classNamespace'.
+ *
+ * Default value, string "" - no layout view
+ */
+$configuration["defaultLayout"] = "";
+
 /*
  * Automatically set template name if none was set before
  */
