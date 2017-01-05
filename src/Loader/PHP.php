@@ -28,13 +28,13 @@ class PHP extends AbstractLoader
      * @param array $data View data
      * @return string
      */
-    protected function _load(string $template, array $data): string
+    protected function load(string $template, array $data): string
     {
         extract($data);
 
         $buffer = "";
         ob_start();
-        include $this->_templateDir . $template;
+        include $this->templateDir . $template;
         $buffer = ob_get_contents();
         ob_end_clean();
         return $buffer;

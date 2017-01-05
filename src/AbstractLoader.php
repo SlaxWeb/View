@@ -37,42 +37,42 @@ abstract class AbstractLoader
      *
      * @var \Symfony\Component\HttpFoundation\Response
      */
-    protected $_response = null;
+    protected $response = null;
 
     /**
      * Logger
      *
      * @var \Psr\Log\LoggerInterface
      */
-    protected $_logger = null;
+    protected $logger = null;
 
     /**
      * Template file extension
      *
      * @var string
      */
-    protected $_tplExt = "";
+    protected $tplExt = "";
 
     /**
      * Template file
      *
      * @var string
      */
-    protected $_template = "";
+    protected $template = "";
 
     /**
      * Template directory
      *
      * @var string
      */
-    protected $_templateDir = "";
+    protected $templateDir = "";
 
     /**
      * Cached template data
      *
      * @var array
      */
-    protected $_cachedData = [];
+    protected $cachedData = [];
 
     /**
      * Class constructor
@@ -86,14 +86,14 @@ abstract class AbstractLoader
      */
     public function __construct(Response $response, Logger $logger)
     {
-        $this->_response = $response;
-        $this->_logger = $logger;
+        $this->response = $response;
+        $this->logger = $logger;
 
         if (method_exists($this, "init")) {
             $this->init();
         }
 
-        $this->_logger->info("PHP Template Loader initialized");
+        $this->logger->info("PHP Template Loader initialized");
     }
 
     /**
@@ -107,7 +107,7 @@ abstract class AbstractLoader
      */
     public function setTemplateExt(string $tplExt): self
     {
-        $this->_tplExt = "." . ltrim($tplExt, ",");
+        $this->tplExt = "." . ltrim($tplExt, ",");
         return $this;
     }
 
@@ -121,8 +121,8 @@ abstract class AbstractLoader
      */
     public function setTemplate(string $template): self
     {
-        $this->_template = $template;
-        $this->_logger->debug("Template file set to loader.", ["template" => $this->_template]);
+        $this->template = $template;
+        $this->logger->debug("Template file set to loader.", ["template" => $this->template]);
         return $this;
     }
 
@@ -136,8 +136,8 @@ abstract class AbstractLoader
      */
     public function setTemplateDir(string $templateDir): self
     {
-        $this->_templateDir = rtrim($templateDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $this->_logger->debug("Template directory set to loader." , ["templateDir" => $this->_templateDir]);
+        $this->templateDir = rtrim($templateDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->logger->debug("Template directory set to loader." , ["templateDir" => $this->templateDir]);
         return $this;
     }
 
@@ -168,43 +168,43 @@ abstract class AbstractLoader
         int $return = self::TPL_OUTPUT,
         int $cacheData = self::TPL_CACHE_VARS
     ): string {
-        $this->_logger->info("Rendering template", ["template" => $this->_template]);
+        $this->logger->info("Rendering template", ["template" => $this->template]);
 
         if ($cacheData < AbstractLoader::TPL_NO_CACHE_VARS) {
-            $this->_logger->info("View data combined from input and cache");
-            $data = array_merge($this->_cachedData, $data);
+            $this->logger->info("View data combined from input and cache");
+            $data = array_merge($this->cachedData, $data);
             if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
-                $this->_logger->info("Caching newly combined view data");
-                $this->_cachedData = $data;
+                $this->logger->info("Caching newly combined view data");
+                $this->cachedData = $data;
             }
         }
 
-        $template = preg_replace("~\.{$this->_tplExt}$~", "", $this->_template)
-            . "{$this->_tplExt}";
+        $template = preg_replace("~\.{$this->tplExt}$~", "", $this->template)
+            . "{$this->tplExt}";
 
-        if (file_exists($this->_templateDir . $template) === false) {
-            $this->_logger->error(
+        if (file_exists($this->templateDir . $template) === false) {
+            $this->logger->error(
                 "Template does not exist or is not readable",
-                ["template" => $this->_templateDir . $template]
+                ["template" => $this->templateDir . $template]
             );
             throw new \SlaxWeb\View\Exception\TemplateNotFoundException(
-                "Requested template file ({$this->_templateDir}{$template}) was not found."
+                "Requested template file ({$this->templateDir}{$template}) was not found."
             );
         }
 
-        $buffer = $this->_load($template, $data);
-        $this->_logger->debug(
+        $buffer = $this->load($template, $data);
+        $this->logger->debug(
             "Template loaded and rendered.",
             ["template" => $template, "data" => $data, "rendered" => $buffer]
         );
 
         if ($return === AbstractLoader::TPL_RETURN) {
-            $this->_logger->info("Returning rendered template");
+            $this->logger->info("Returning rendered template");
             return $buffer;
         }
 
-        $this->_response->setContent($this->_response->getContent() . $buffer);
-        $this->_logger->info("Rendered template appended to Response contents");
+        $this->response->setContent($this->response->getContent() . $buffer);
+        $this->logger->info("Rendered template appended to Response contents");
         return "";
     }
 
@@ -218,5 +218,5 @@ abstract class AbstractLoader
      * @param array $data View data
      * @return string
      */
-    abstract protected function _load(string $template, array $data): string;
+    abstract protected function load(string $template, array $data): string;
 }
