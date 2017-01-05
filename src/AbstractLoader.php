@@ -23,7 +23,8 @@ abstract class AbstractLoader
      * Template variables caching
      */
     const TPL_CACHE_VARS = 100;
-    const TPL_NO_CACHE_VARS = 101;
+    const TPL_USE_VARS_ONLY = 101;
+    const TPL_NO_CACHE_VARS = 102;
 
     /**
      * Template render output control
