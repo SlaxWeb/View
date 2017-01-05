@@ -170,10 +170,13 @@ abstract class AbstractLoader
     ): string {
         $this->_logger->info("Rendering template", ["template" => $this->_template]);
 
-        if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
-            $this->_cachedData = array_merge($this->_cachedData, $data);
-            $this->_logger->info("Data combined and cached");
-            $data = $this->_cachedData;
+        if ($cacheData < AbstractLoader::TPL_NO_CACHE_VARS) {
+            $this->_logger->info("View data combined from input and cache");
+            $data = array_merge($this->_cachedData, $data);
+            if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
+                $this->_logger->info("Caching newly combined view data");
+                $this->_cachedData = $data;
+            }
         }
 
         $template = preg_replace("~\.{$this->_tplExt}$~", "", $this->_template)
