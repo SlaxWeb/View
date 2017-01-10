@@ -11,8 +11,8 @@
     "require": {
         "php":  ">=7.0.0",
         "symfony/http-foundation": "~3.0",
-        "slaxweb/logger": "dev-develop",
-        "slaxweb/config": "dev-develop"
+        "slaxweb/logger": "~0.3",
+        "slaxweb/config": "~0.2"
     },
     "require-dev": {
         "codeception/codeception": "~2.2",
@@ -28,8 +28,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "0.4.x-dev"
+            "dev-master": "0.5.x-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
