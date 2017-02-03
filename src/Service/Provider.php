@@ -35,6 +35,10 @@ class Provider implements \Pimple\ServiceProviderInterface
         // Define view class loader
         $container["loadView.service"] = $container->protect(
             function (string $view, bool $useLayout = true) use ($container) {
+                $cacheName = "loadView.service-{$view}" . $useLayout ? "1" : "0";
+                if (isset($container[$cacheName])) {
+                    return $container[$cacheName];
+                }
                 $class = rtrim($container["config.service"]["view.classNamespace"], "\\")
                     . "\\"
                     . str_replace("/", "\\", $view);
@@ -54,7 +58,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                     $view->setLayout($container["loadView.service"]($layoutClass, false));
                 }
 
-                return $view;
+                return $container[$cacheName] = $view;
             }
         );
     }
