@@ -4,6 +4,10 @@ Changes between versions
 
 ## Current changes
 
+## v0.5
+
+### v0.5.0
+
 * Save view object to application properties and re-use it on consecutive calls
 to the loader
 
