@@ -22,7 +22,11 @@
     },
     "autoload": {
         "psr-4": {
-            "SlaxWeb\\View\\": "src/",
+            "SlaxWeb\\View\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "SlaxWeb\\View\\Test\\Unit\\": "tests/unit/"
         }
     },
