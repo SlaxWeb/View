@@ -6,6 +6,11 @@ Changes between versions
 
 ## v0.5
 
+### v0.5.1
+
+* fix view consecutive load cache name malformation disabling load of multiple different
+views in same requests
+
 ### v0.5.0
 
 * Save view object to application properties and re-use it on consecutive calls
