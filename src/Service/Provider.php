@@ -61,6 +61,38 @@ class Provider implements \Pimple\ServiceProviderInterface
             }
         );
 
+        $container["loadTemplate.service"] = $container->protect(
+            function (string $template, bool $useLayout = true) {
+                $cacheName = "loadTemplate.service-{$template}" . ($useLayout ? "1" : "0");
+                if (isset($container[$cacheName])) === false) {
+                    return $container[$cacheName];
+                }
+
+                $container["view.skipCache"] = true;
+                $container["view.className"] = \SlaxWeb\View\Base::class;
+                $view = $container["loadView.service"]("", false);
+                $view->template = $template;
+                unset($container["view.skipCache"], $container["view.className"]);
+
+                if ($useLayout) {
+                    $layoutName = $container["config.service"]["view.defaultLayout"]);
+                    if (class_exists($this->getViewClass($layoutName))) {
+                        $layoutView = $container["loadView.service"]($layoutName);
+                    } else {
+                        $container["view.skipCache"] = true;
+                        $container["view.className"] = \SlaxWeb\View\Base::class;
+                        $layoutView = $container["loadView.service"]("", false);
+                        $layoutView->template = $layoutName;
+                    }
+
+                    $view->setLayout($layoutView);
+                }
+
+                return $container[$cacheName] = $view;
+            }
+        );
+    }
+
     /**
      * Get View Class
      *
