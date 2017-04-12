@@ -169,14 +169,7 @@ abstract class AbstractLoader
     ): string {
         $this->logger->info("Rendering template", ["template" => $this->template]);
 
-        if ($cacheData < AbstractLoader::TPL_NO_CACHE_VARS) {
-            $this->logger->info("View data combined from input and cache");
-            $data = array_merge($this->cachedData, $data);
-            if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
-                $this->logger->info("Caching newly combined view data");
-                $this->cachedData = $data;
-            }
-        }
+        $data = $this->combineData($data, $cacheData);
 
         $template = preg_replace("~\.{$this->tplExt}$~", "", $this->template)
             . "{$this->tplExt}";
@@ -205,6 +198,31 @@ abstract class AbstractLoader
         $this->response->setContent($this->response->getContent() . $buffer);
         $this->logger->info("Rendered template appended to Response contents");
         return "";
+    }
+
+    /**
+     * Combine data
+     *
+     * Combines the received data and the already cached data, depending on the
+     * *$cacheData* parameter passed as the second parameter. The first parameter
+     * holds an array of data that will be combined with the cached data.
+     *
+     * @param array $data Template data to be passed to the template. Default []
+     * @param int $cacheData Cache template data.
+     * @return array
+     */
+    protected function combineData(array $data, int $cacheData): array
+    {
+        if ($cacheData < AbstractLoader::TPL_NO_CACHE_VARS) {
+            $this->logger->info("View data combined from input and cache");
+            $data = array_merge($this->cachedData, $data);
+            if ($cacheData === AbstractLoader::TPL_CACHE_VARS) {
+                $this->logger->info("Caching newly combined view data");
+                $this->cachedData = $data;
+            }
+        }
+
+        return $data;
     }
 
     /**
