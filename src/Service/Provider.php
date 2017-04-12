@@ -49,7 +49,7 @@ class Provider implements \Pimple\ServiceProviderInterface
 
                 if (method_exists($view, "init")) {
                     $args = func_get_args();
-                    array_shift($args);
+                    array_slice($args, 2);
                     $view->init(...$args);
                 }
 
