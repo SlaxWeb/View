@@ -40,7 +40,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                     return $container[$cacheName];
                 }
 
-                $class = $container["view.className"] ?? $this->getViewClass($view);
+                $class = $container["view.className"] ?? $this->getViewClass($view, $container);
                 $view = new $class(
                     $container["config.service"],
                     $container["tplLoader.service"],
@@ -62,7 +62,7 @@ class Provider implements \Pimple\ServiceProviderInterface
         );
 
         $container["loadTemplate.service"] = $container->protect(
-            function (string $template, bool $useLayout = true) {
+            function (string $template, bool $useLayout = true) use ($container) {
                 $cacheName = "loadTemplate.service-{$template}" . ($useLayout ? "1" : "0");
                 if (isset($container[$cacheName])) {
                     return $container[$cacheName];
@@ -76,7 +76,7 @@ class Provider implements \Pimple\ServiceProviderInterface
 
                 if ($useLayout) {
                     $layoutName = $container["config.service"]["view.defaultLayout"];
-                    if (class_exists($this->getViewClass($layoutName))) {
+                    if (class_exists($this->getViewClass($layoutName, $container))) {
                         $layoutView = $container["loadView.service"]($layoutName);
                     } else {
                         $container["view.skipCache"] = true;
@@ -100,9 +100,10 @@ class Provider implements \Pimple\ServiceProviderInterface
      * and returns it as a string.
      *
      * @param string $view Namespaceless view class name
+     * @param \Pimple\Container $container Service container
      * @return string
      */
-    protected function getViewClass(string $view): string
+    protected function getViewClass(string $view, Container $container): string
     {
         return rtrim($container["config.service"]["view.classNamespace"], "\\")
             . "\\"
