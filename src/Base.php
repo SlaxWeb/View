@@ -79,7 +79,6 @@ class Base
      * @param \SlaxWeb\Config\Container $config Configuration container
      * @param \SlaxWeb\View\AbstractLoader $loader Template file loader
      * @param \Symfony\Component\HttpFoundation\Response $response Response object
-     * @return void
      */
     public function __construct(Config $config, Loader $loader, Response $response)
     {

@@ -82,7 +82,6 @@ abstract class AbstractLoader
      *
      * @param \Symfony\Component\HttpFoundation\Response $response Response object
      * @param \Psr\Log\LoggerInterface $logger PSR4 compatible Logger object
-     * @return void
      */
     public function __construct(Response $response, Logger $logger)
     {
