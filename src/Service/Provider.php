@@ -36,7 +36,7 @@ class Provider implements \Pimple\ServiceProviderInterface
         $container["loadView.service"] = $container->protect(
             function (string $view, bool $useLayout = true) use ($container) {
                 $cacheName = "loadView.service-{$view}" . ($useLayout ? "1" : "0");
-                if (isset($container[$cacheName])) {
+                if (isset($container[$cacheName]) && isset($container["view.skipCache"]) === false) {
                     return $container[$cacheName];
                 }
 
