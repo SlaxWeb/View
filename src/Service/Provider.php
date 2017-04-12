@@ -39,9 +39,8 @@ class Provider implements \Pimple\ServiceProviderInterface
                 if (isset($container[$cacheName])) {
                     return $container[$cacheName];
                 }
-                $class = rtrim($container["config.service"]["view.classNamespace"], "\\")
-                    . "\\"
-                    . str_replace("/", "\\", $view);
+
+                $class = $container["view.className"] ?? $this->getViewClass($view);
                 $view = new $class(
                     $container["config.service"],
                     $container["tplLoader.service"],
@@ -61,5 +60,20 @@ class Provider implements \Pimple\ServiceProviderInterface
                 return $container[$cacheName] = $view;
             }
         );
+
+    /**
+     * Get View Class
+     *
+     * Constructs the full view class name with the fully qualified namespace name
+     * and returns it as a string.
+     *
+     * @param string $view Namespaceless view class name
+     * @return string
+     */
+    protected function getViewClass(string $view): string
+    {
+        return rtrim($container["config.service"]["view.classNamespace"], "\\")
+            . "\\"
+            . str_replace("/", "\\", $view);
     }
 }
