@@ -11,8 +11,8 @@
     "require": {
         "php":  ">=7.0.0",
         "symfony/http-foundation": "~3.0",
-        "slaxweb/logger": "~0.4",
-        "slaxweb/config": "~0.2"
+        "slaxweb/logger": "dev-master",
+        "slaxweb/config": "dev-master"
     },
     "require-dev": {
         "codeception/codeception": "~2.2",
