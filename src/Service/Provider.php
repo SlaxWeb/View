@@ -64,7 +64,7 @@ class Provider implements \Pimple\ServiceProviderInterface
         $container["loadTemplate.service"] = $container->protect(
             function (string $template, bool $useLayout = true) {
                 $cacheName = "loadTemplate.service-{$template}" . ($useLayout ? "1" : "0");
-                if (isset($container[$cacheName])) === false) {
+                if (isset($container[$cacheName])) {
                     return $container[$cacheName];
                 }
 
@@ -75,7 +75,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                 unset($container["view.skipCache"], $container["view.className"]);
 
                 if ($useLayout) {
-                    $layoutName = $container["config.service"]["view.defaultLayout"]);
+                    $layoutName = $container["config.service"]["view.defaultLayout"];
                     if (class_exists($this->getViewClass($layoutName))) {
                         $layoutView = $container["loadView.service"]($layoutName);
                     } else {
