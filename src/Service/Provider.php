@@ -76,14 +76,9 @@ class Provider implements \Pimple\ServiceProviderInterface
 
                 if ($useLayout) {
                     $layoutName = $container["config.service"]["view.defaultLayout"];
-                    if (class_exists($this->getViewClass($layoutName, $container))) {
-                        $layoutView = $container["loadView.service"]($layoutName);
-                    } else {
-                        $container["view.skipCache"] = true;
-                        $container["view.className"] = \SlaxWeb\View\Base::class;
-                        $layoutView = $container["loadView.service"]("", false);
-                        $layoutView->template = $layoutName;
-                    }
+                    $layoutView = class_exists($this->getViewClass($layoutName, $container))
+                        ? $container["loadView.service"]($layoutName, true);
+                        : $container["loadTemplate.service"]($layoutName, false);
 
                     $view->setLayout($layoutView);
                 }
