@@ -78,7 +78,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                     $layoutName = $container["config.service"]["view.defaultLayout"];
                     // if the layout class exist, load the layout as a view
                     $layoutView = class_exists($this->getViewClass($layoutName, $container))
-                        ? $container["loadView.service"]($layoutName, true)
+                        ? $container["loadView.service"]($layoutName, false)
                         : $container["loadTemplate.service"]($layoutName, false);
 
                     $view->setLayout($layoutView);
