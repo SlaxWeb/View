@@ -62,8 +62,8 @@ class Provider implements \Pimple\ServiceProviderInterface
                     $view->init(...$args);
                 }
 
-                if ($useLayout && ($layoutClass = $container["config.service"]["view.defaultLayout"]) !== "") {
-                    $this->setLayout($layoutClass, $view);
+                if ($useLayout && ($layoutName = $container["config.service"]["view.defaultLayout"]) !== "") {
+                    $this->setLayout($layoutName, $view);
                 }
 
                 return $container[$cacheName] = $view;
@@ -83,8 +83,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                 $view->template = $template;
                 unset($container["view.skipCache"], $container["view.className"]);
 
-                if ($useLayout) {
-                    $layoutName = $container["config.service"]["view.defaultLayout"];
+                if ($useLayout && ($layoutName = $container["config.service"]["view.defaultLayout"]) !== "") {
                     $this->setLayout($layoutName, $view);
                 }
 
