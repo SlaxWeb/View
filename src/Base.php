@@ -195,7 +195,7 @@ class Base
      *
      * @return void
      */
-    public function _renderSubViews()
+    protected function _renderSubViews()
     {
         foreach ($this->_subViews as $name => $view) {
             $this->viewData["subview_{$name}"] = $view->render([], Loader::TPL_RETURN);
