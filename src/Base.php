@@ -130,7 +130,7 @@ class Base
      */
     public function addSubView(string $name, Base $subView): self
     {
-        $this->subViews[$name] = $subView;
+        $this->subViews[$name][] = $subView;
         return $this;
     }
 
@@ -149,7 +149,7 @@ class Base
      */
     public function addSubTemplate(string $name, string $subTemplate): self
     {
-        $this->subViews[$name] = $subTemplate;
+        $this->subViews[$name][] = $subTemplate;
         return $this;
     }
 
@@ -217,17 +217,26 @@ class Base
      */
     protected function renderSubViews()
     {
-        foreach ($this->subViews as $name => $view) {
-            if (is_string($view)) {
-                $this->loader->setTemplate($view);
-                $this->viewData["subview_{$name}"] = $this->loader->render(
-                    $this->viewData,
-                    Loader::TPL_RETURN,
-                    Loader::TPL_CACHE_VARS
-                );
-                continue;
+        foreach ($this->subViews as $name => $views) {
+            if (isset($this->viewData["subview_{$name}"]) === false) {
+                $this->viewData["subview_{$name}"] = "";
             }
-            $this->viewData["subview_{$name}"] = $view->render($this->viewData, Loader::TPL_RETURN);
+
+            foreach ($views as $view) {
+                if (is_string($view)) {
+                    $this->loader->setTemplate($view);
+                    $this->viewData["subview_{$name}"] .= $this->loader->render(
+                        $this->viewData,
+                        Loader::TPL_RETURN,
+                        Loader::TPL_CACHE_VARS
+                    );
+                    continue;
+                }
+                $this->viewData["subview_{$name}"] .= $view->render(
+                    $this->viewData,
+                    Loader::TPL_RETURN
+                );
+            }
         }
     }
 }

@@ -234,7 +234,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
         $this->loader->expects($this->exactly(2))
             ->method("render")
             ->withConsecutive(
-                [["subview_view" => "Sub View"], AbstractLoader::TPL_RETURN, AbstractLoader::TPL_CACHE_VARS],
+                [
+                    ["subview_view" => "Sub View", "subview_tpl" => ""],
+                    AbstractLoader::TPL_RETURN,
+                    AbstractLoader::TPL_CACHE_VARS
+                ],
                 [$subViews, AbstractLoader::TPL_RETURN, AbstractLoader::TPL_CACHE_VARS]
             )->will($this->onConsecutiveCalls("Sub Template", "Main View"));
 
@@ -252,7 +256,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
         $view->expects($this->once())
             ->method("render")
-            ->with([], AbstractLoader::TPL_RETURN)
+            ->with(["subview_view" => ""], AbstractLoader::TPL_RETURN)
             ->willReturn("Sub View");
 
         $this->config->expects($this->any())
