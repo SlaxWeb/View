@@ -18,6 +18,13 @@ use Pimple\Container;
 class Provider implements \Pimple\ServiceProviderInterface
 {
     /**
+     * Container
+     *
+     * @var \Pimple\Container
+     */
+    protected $container = null;
+
+    /**
      * Register provider
      *
      * Register the PHP Template Loader as the tempalte loader to the DIC.
@@ -27,6 +34,8 @@ class Provider implements \Pimple\ServiceProviderInterface
      */
     public function register(Container $container)
     {
+        $this->container = $container;
+
         // Register the PHP view loader if configuration says so
         if (strtolower($container["config.service"]["view.loader"]) === "php") {
             $container->register(new PHPLoaderProvider);
@@ -40,7 +49,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                     return $container[$cacheName];
                 }
 
-                $class = $container["view.className"] ?? $this->getViewClass($view, $container);
+                $class = $container["view.className"] ?? $this->getViewClass($view);
                 $view = new $class(
                     $container["config.service"],
                     $container["tplLoader.service"],
@@ -54,7 +63,7 @@ class Provider implements \Pimple\ServiceProviderInterface
                 }
 
                 if ($useLayout && ($layoutClass = $container["config.service"]["view.defaultLayout"]) !== "") {
-                    $view->setLayout($container["loadView.service"]($layoutClass, false));
+                    $this->setLayout($layoutClass, $view);
                 }
 
                 return $container[$cacheName] = $view;
@@ -76,12 +85,7 @@ class Provider implements \Pimple\ServiceProviderInterface
 
                 if ($useLayout) {
                     $layoutName = $container["config.service"]["view.defaultLayout"];
-                    // if the layout class exist, load the layout as a view
-                    $layoutView = class_exists($this->getViewClass($layoutName, $container))
-                        ? $container["loadView.service"]($layoutName, false)
-                        : $container["loadTemplate.service"]($layoutName, false);
-
-                    $view->setLayout($layoutView);
+                    $this->setLayout($layoutName, $view);
                 }
 
                 return $container[$cacheName] = $view;
@@ -96,13 +100,33 @@ class Provider implements \Pimple\ServiceProviderInterface
      * and returns it as a string.
      *
      * @param string $view Namespaceless view class name
-     * @param \Pimple\Container $container Service container
      * @return string
      */
-    protected function getViewClass(string $view, Container $container): string
+    protected function getViewClass(string $view): string
     {
         return rtrim($container["config.service"]["view.classNamespace"], "\\")
             . "\\"
             . str_replace("/", "\\", $view);
+    }
+
+    /**
+     * Set Layout
+     *
+     * Loads and sets the layout to the view object that it receives. The first
+     * parameter must hold the name of the layout to load, and the second parameter
+     * is the view object to which the layout will be set.
+     *
+     * @param string $name Name of the layout
+     * @param \SlaxWeb\View\Base $view View to which the layout is to be set
+     * @return void
+     */
+    protected function setLayout(string $name, \SlaxWeb\View\Base $view)
+    {
+        // if the layout class exist, load the layout as a view
+        $layoutView = class_exists($this->getViewClass($name))
+            ? $this->container["loadView.service"]($name, false)
+            : $this->container["loadTemplate.service"]($name, false);
+
+        $view->setLayout($layoutView);
     }
 }
