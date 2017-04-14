@@ -231,14 +231,14 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             "subview_tpl"   =>  "Sub Template"
         ];
 
-        $this->_loader->expects($this->exactly(2))
+        $this->loader->expects($this->exactly(2))
             ->method("render")
             ->withConsecutive(
                 [["subview_view" => "Sub View"], AbstractLoader::TPL_RETURN, AbstractLoader::TPL_CACHE_VARS],
                 [$subViews, AbstractLoader::TPL_RETURN, AbstractLoader::TPL_CACHE_VARS]
             )->will($this->onConsecutiveCalls("Sub Template", "Main View"));
 
-        $this->_loader->expects($this->exactly(2))
+        $this->loader->expects($this->exactly(2))
             ->method("setTemplate")
             ->withConsecutive(
                 ["Template"],
@@ -255,7 +255,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             ->with([], AbstractLoader::TPL_RETURN)
             ->willReturn("Sub View");
 
-        $this->_config->expects($this->any())
+        $this->config->expects($this->any())
             ->method("offsetGet")
             ->with("view.baseDir")
             ->willReturn("viewDir");
@@ -266,7 +266,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             ->setMockClassName("BaseViewMock")
             ->getMockForAbstractClass();
         $base->template = "PreSetTemplateName";
-        $base->__construct($this->_config, $this->_loader, $this->_response);
+        $base->__construct($this->config, $this->loader, $this->response);
 
         $base->addSubView("view", $view);
         $base->addSubTemplate("tpl", "Template");

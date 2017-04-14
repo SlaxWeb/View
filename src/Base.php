@@ -149,7 +149,7 @@ class Base
      */
     public function addSubTemplate(string $name, string $subTemplate): self
     {
-        $this->_subViews[$name] = $subTemplate;
+        $this->subViews[$name] = $subTemplate;
         return $this;
     }
 
@@ -217,7 +217,7 @@ class Base
      */
     protected function renderSubViews()
     {
-        foreach ($this->_subViews as $name => $view) {
+        foreach ($this->subViews as $name => $view) {
             if (is_string($view)) {
                 $this->loader->setTemplate($view);
                 $this->viewData["subview_{$name}"] = $this->loader->render(
