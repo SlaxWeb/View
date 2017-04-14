@@ -44,7 +44,7 @@ class Base
     /**
      * Sub views
      *
-     * @var array<\SlaxWeb\View\Base>
+     * @var array<array<\SlaxWeb\View\Base>>
      */
     protected $subViews = [];
 
