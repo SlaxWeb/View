@@ -215,7 +215,7 @@ class Base
      *
      * @return void
      */
-    public function _renderSubViews()
+    protected function _renderSubViews()
     {
         foreach ($this->_subViews as $name => $view) {
             if (is_string($view)) {
