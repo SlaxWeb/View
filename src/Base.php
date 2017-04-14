@@ -39,35 +39,35 @@ class Base
      *
      * @var \SlaxWeb\View\Base
      */
-    protected $_layout = null;
+    protected $layout = null;
 
     /**
      * Sub views
      *
      * @var array<\SlaxWeb\View\Base>
      */
-    protected $_subViews = [];
+    protected $subViews = [];
 
     /**
      * Config
      *
      * @var \SlaxWeb\Config\Container
      */
-    protected $_config = null;
+    protected $config = null;
 
     /**
      * Template Loader
      *
      * @var \SlaxWeb\View\AbstractLoader
      */
-    protected $_loader = null;
+    protected $loader = null;
 
     /**
      * Output
      *
      * @var \Symfony\Component\HttpFoundation\Response
      */
-    protected $_response = null;
+    protected $response = null;
 
     /**
      * Class constructor
@@ -82,11 +82,11 @@ class Base
      */
     public function __construct(Config $config, Loader $loader, Response $response)
     {
-        $this->_config = $config;
-        $this->_loader = $loader;
-        $this->_response = $response;
+        $this->config = $config;
+        $this->loader = $loader;
+        $this->response = $response;
 
-        $this->_loader->setTemplateDir($config["view.baseDir"]);
+        $this->loader->setTemplateDir($config["view.baseDir"]);
 
         if ($this->template === "" && $config["view.autoTplName"] === true) {
             $class = get_class($this);
@@ -113,7 +113,7 @@ class Base
      */
     public function setLayout(Base $layout = null): self
     {
-        $this->_layout = $layout;
+        $this->layout = $layout;
         return $this;
     }
 
@@ -129,7 +129,7 @@ class Base
      */
     public function addSubView(string $name, Base $subView): self
     {
-        $this->_subViews[$name] = $subView;
+        $this->subViews[$name] = $subView;
         return $this;
     }
 
@@ -156,22 +156,22 @@ class Base
         $this->viewData = array_merge($this->viewData, $data);
 
         // render the subviews
-        $this->_renderSubViews();
+        $this->renderSubViews();
 
         // set the template name to the loader
-        $this->_loader->setTemplate($this->template);
+        $this->loader->setTemplate($this->template);
 
         // load main view
         try {
-            $buffer = $this->_loader->render($this->viewData, Loader::TPL_RETURN, $cacheData);
+            $buffer = $this->loader->render($this->viewData, Loader::TPL_RETURN, $cacheData);
         } catch (Exception\TemplateNotFoundException $e) {
             // @todo: display error message
             return false;
         }
 
         // load main view into layout
-        if ($this->_layout !== null) {
-            $buffer = $this->_layout->render(
+        if ($this->layout !== null) {
+            $buffer = $this->layout->render(
                 array_merge($this->viewData, ["mainView" => $buffer]),
                 Loader::TPL_RETURN,
                 $cacheData
@@ -183,7 +183,7 @@ class Base
         }
 
         // set rendered template to output object
-        $this->_response->setContent($this->_response->getContent() . $buffer);
+        $this->response->setContent($this->response->getContent() . $buffer);
 
         return true;
     }
@@ -195,9 +195,9 @@ class Base
      *
      * @return void
      */
-    protected function _renderSubViews()
+    protected function renderSubViews()
     {
-        foreach ($this->_subViews as $name => $view) {
+        foreach ($this->subViews as $name => $view) {
             $this->viewData["subview_{$name}"] = $view->render([], Loader::TPL_RETURN);
         }
     }
