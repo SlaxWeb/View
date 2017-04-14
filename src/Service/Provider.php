@@ -103,7 +103,7 @@ class Provider implements \Pimple\ServiceProviderInterface
      */
     protected function getViewClass(string $view): string
     {
-        return rtrim($container["config.service"]["view.classNamespace"], "\\")
+        return rtrim($this->container["config.service"]["view.classNamespace"], "\\")
             . "\\"
             . str_replace("/", "\\", $view);
     }
