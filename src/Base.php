@@ -218,7 +218,16 @@ class Base
     public function _renderSubViews()
     {
         foreach ($this->_subViews as $name => $view) {
-            $this->viewData["subview_{$name}"] = $view->render([], Loader::TPL_RETURN);
+            if (is_string($view)) {
+                $this->_loader->setTemplate($view);
+                $this->viewData["subview_{$name}"] = $this->_loader->render(
+                    $this->viewData,
+                    Loader::TPL_RETURN,
+                    Loader::TPL_CACHE_VARS
+                );
+                continue;
+            }
+            $this->viewData["subview_{$name}"] = $view->render($this->viewData, Loader::TPL_RETURN);
         }
     }
 }
