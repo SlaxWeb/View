@@ -121,7 +121,8 @@ class Base
      * Add SubView
      *
      * Adds a SubView to the local container. The '$name' parameter is the name
-     * under which the rendered subview is then available in the main view.
+     * under which the rendered subview is then available in the main view. Example:
+     * When '$name' is 'foo', the variable in the template will be 'subview_foo'.
      *
      * @param string $name Name of the SubView
      * @param \SlaxWeb\View\Base $subView Sub View object extended from the same Base class
@@ -130,6 +131,25 @@ class Base
     public function addSubView(string $name, Base $subView): self
     {
         $this->subViews[$name] = $subView;
+        return $this;
+    }
+
+    /**
+     * Add SubTemplate
+     *
+     * Adds a SubTemplate to the local container. The '$name' parameter is the name
+     * under which the rendered subview is then available in the main view. Example:
+     * When '$name' is 'foo', the variable in the template will be 'subview_foo'.
+     * The SubTemplate is the same as a SubView except it does not provide its own
+     * View Class, but is simply rendered using the current instance.
+     *
+     * @param string $name Name of the SubView
+     * @param string $subTemplate Sub Template name
+     * @return self
+     */
+    public function addSubTemplate(string $name, string $subTemplate): self
+    {
+        $this->subViews[$name] = $subTemplate;
         return $this;
     }
 
@@ -198,7 +218,16 @@ class Base
     protected function renderSubViews()
     {
         foreach ($this->subViews as $name => $view) {
-            $this->viewData["subview_{$name}"] = $view->render([], Loader::TPL_RETURN);
+            if (is_string($view)) {
+                $this->loader->setTemplate($view);
+                $this->viewData["subview_{$name}"] = $this->loader->render(
+                    $this->viewData,
+                    Loader::TPL_RETURN,
+                    Loader::TPL_CACHE_VARS
+                );
+                continue;
+            }
+            $this->viewData["subview_{$name}"] = $view->render($this->viewData, Loader::TPL_RETURN);
         }
     }
 }
