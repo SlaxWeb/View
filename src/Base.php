@@ -121,7 +121,8 @@ class Base
      * Add SubView
      *
      * Adds a SubView to the local container. The '$name' parameter is the name
-     * under which the rendered subview is then available in the main view.
+     * under which the rendered subview is then available in the main view. Example:
+     * When '$name' is 'foo', the variable in the template will be 'subview_foo'.
      *
      * @param string $name Name of the SubView
      * @param \SlaxWeb\View\Base $subView Sub View object extended from the same Base class
