@@ -135,6 +135,25 @@ class Base
     }
 
     /**
+     * Add SubTemplate
+     *
+     * Adds a SubTemplate to the local container. The '$name' parameter is the name
+     * under which the rendered subview is then available in the main view. Example:
+     * When '$name' is 'foo', the variable in the template will be 'subview_foo'.
+     * The SubTemplate is the same as a SubView except it does not provide its own
+     * View Class, but is simply rendered using the current instance.
+     *
+     * @param string $name Name of the SubView
+     * @param string $subTemplate Sub Template name
+     * @return self
+     */
+    public function addSubTemplate(string $name, string $subTemplate): self
+    {
+        $this->_subViews[$name] = $subTemplate;
+        return $this;
+    }
+
+    /**
      * Render view
      *
      * Renders the view by rendering the template with the provided template loader.
