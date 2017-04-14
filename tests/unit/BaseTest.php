@@ -26,21 +26,21 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      *
      * @var \SlaxWeb\Config\Container_mock
      */
-    protected $_config = null;
+    protected $config = null;
 
     /**
      * Loader
      *
      * @var \SlaxWeb\View\AbstractLoader
      */
-    protected $_loader = null;
+    protected $loader = null;
 
     /**
      * Response
      *
      * @var \Symfony\Component\HttpFoundation\Response
      */
-    protected $_response = null;
+    protected $response = null;
 
     /**
      * Prepare tests
@@ -51,12 +51,12 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->_config = $this->getMockBuilder(Config::class)
+        $this->config = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
             ->setMethods(["offsetGet"])
             ->getMock();
-        $this->_loader = $this->createMock(AbstractLoader::class);
-        $this->_response = $this->createMock(Response::class);
+        $this->loader = $this->createMock(AbstractLoader::class);
+        $this->response = $this->createMock(Response::class);
     }
 
     protected function tearDown()
@@ -73,7 +73,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testTemplateFileSet()
     {
-        $this->_config->expects($this->exactly(6))
+        $this->config->expects($this->exactly(6))
             ->method("offsetGet")
             ->withConsecutive(
                 // base view auto-sets template name
@@ -110,17 +110,17 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         // base view auto-sets template name
-        $base->__construct($this->_config, $this->_loader, $this->_response);
+        $base->__construct($this->config, $this->loader, $this->response);
         $this->assertEquals("BaseViewMock", $base->template);
 
         // config does not allow automatical setting of template name
         $base->template = "";
-        $base->__construct($this->_config, $this->_loader, $this->_response);
+        $base->__construct($this->config, $this->loader, $this->response);
         $this->assertEquals("", $base->template);
 
         // template name already set
         $base->template = "PreSetTemplateName";
-        $base->__construct($this->_config, $this->_loader, $this->_response);
+        $base->__construct($this->config, $this->loader, $this->response);
         $this->assertEquals("PreSetTemplateName", $base->template);
     }
 
@@ -135,11 +135,11 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testRendering()
     {
-        $this->_loader->expects($this->exactly(1))
+        $this->loader->expects($this->exactly(1))
             ->method("setTemplate")
             ->with("PreSetTemplateName");
 
-        $this->_loader->expects($this->exactly(1))
+        $this->loader->expects($this->exactly(1))
             ->method("render")
             ->with(
                 ["foo" => "bar", "subview_testSub" => "Sub view"],
@@ -147,16 +147,16 @@ class BaseTest extends \PHPUnit_Framework_TestCase
                 AbstractLoader::TPL_CACHE_VARS
             )->willReturn("Main view");
 
-        $this->_config->expects($this->any())
+        $this->config->expects($this->any())
             ->method("offsetGet")
             ->with("view.baseDir")
             ->willReturn("viewDir");
 
-        $this->_response->expects($this->exactly(1))
+        $this->response->expects($this->exactly(1))
             ->method("setContent")
             ->with("Previous responseRendered template");
 
-        $this->_response->expects($this->exactly(1))
+        $this->response->expects($this->exactly(1))
             ->method("getContent")
             ->willReturn("Previous response");
 
@@ -166,7 +166,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             ->setMockClassName("BaseViewMock")
             ->getMockForAbstractClass();
         $base->template = "PreSetTemplateName";
-        $base->__construct($this->_config, $this->_loader, $this->_response);
+        $base->__construct($this->config, $this->loader, $this->response);
 
         // add a subview
         $subView = $this->getMockBuilder(Base::class)
@@ -203,12 +203,12 @@ class BaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testTplReturn()
     {
-        $this->_loader->expects($this->exactly(1))
+        $this->loader->expects($this->exactly(1))
             ->method("render")
             ->with([], AbstractLoader::TPL_RETURN, AbstractLoader::TPL_CACHE_VARS)
             ->willReturn("Main view");
 
-        $this->_config->expects($this->any())
+        $this->config->expects($this->any())
             ->method("offsetGet")
             ->with("view.baseDir")
             ->willReturn("viewDir");
@@ -219,7 +219,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             ->setMockClassName("BaseViewMock")
             ->getMockForAbstractClass();
         $base->template = "PreSetTemplateName";
-        $base->__construct($this->_config, $this->_loader, $this->_response);
+        $base->__construct($this->config, $this->loader, $this->response);
 
         $this->assertEquals("Main view", $base->render([], AbstractLoader::TPL_RETURN));
     }
