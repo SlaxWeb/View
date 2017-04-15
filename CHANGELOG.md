@@ -4,6 +4,10 @@ Changes between versions
 
 ## Current changes
 
+* load templates without a view class
+* load sub templates without a view class
+* load multiple sub views/sub templates with the same name
+
 ## v0.5
 
 ### v0.5.1
