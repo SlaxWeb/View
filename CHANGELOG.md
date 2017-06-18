@@ -2,7 +2,13 @@
 
 Changes between versions
 
-## Current changes
+## v0.6
+
+### v0.6.1
+
+* fix parameter injecting into the views 'init' method through the view loader service
+
+### v0.6.0
 
 * load templates without a view class
 * load sub templates without a view class
